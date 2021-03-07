@@ -1,15 +1,25 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-
+const mongoose = require('mongoose');
 const config = require('./config');
 
 const productRoutes = require('./api/routes/products');
 const ordersRoutes = require('./api/routes/orders');
 
+mongoose
+  .connect(config.MONGODB, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('База данных подключена'))
+  .catch(() => console.log('Ошибка подключения к базе данных'));
+
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -37,7 +47,8 @@ app.use((err, req, res, next) => {
   res.json({
     error: {
       message: err.message || 'enternal error',
-      status: err.status,
+      status: err.status || 500,
+      name: err.name,
     },
   });
 });
