@@ -3,14 +3,12 @@ const Product = require('../models/product');
 const NotFound = require('../../customErrors/NotFound');
 router.get('/', async (req, res, next) => {
   try {
-    const products = await Product.find().select('_id name price ');
+    const products = await Product.find().select('-__v'); // select __v убирает версию в ответе
     const response = {
       count: products.length,
       products: products.map((p) => {
         return {
-          _id: p._id,
-          name: p.name,
-          price: p.price,
+          ...p._doc,
           request: {
             type: 'GET',
             url: `http://localhost:3000/products/${p._id}`,
@@ -32,7 +30,7 @@ router.post('/', async (req, res, next) => {
       price,
     });
     res.status(201).json({
-      message: 'Продукт создан',
+      message: 'Product was created',
       createdProduct: {
         name,
         price,
@@ -51,7 +49,7 @@ router.get('/:productId', async (req, res, next) => {
   try {
     const id = req.params.productId;
     const product = await Product.findById(id)
-      .select('_id name price')
+      .select('-__v')
       .orFail(new NotFound('Продукт не найден'));
     res.status(200).json({
       product,
@@ -76,7 +74,7 @@ router.patch('/:productId', async (req, res, next) => {
       },
       { runValidators: true, new: true },
     )
-      .select('_id name price')
+      .select('-__v')
       .orFail(new NotFound('Продукт не найден'));
     res.status(200).json({
       message: 'Product updated',
