@@ -4,7 +4,9 @@ const Product = require('../models/product');
 const NotFound = require('../../customErrors/NotFound');
 router.get('/', async (req, res, next) => {
   try {
-    const orders = await Order.find({}).select('-__v');
+    const orders = await Order.find({})
+      .select('-__v')
+      .populate('product', 'name');
     const response = {
       count: orders.length,
       orders: orders.map((o) => {
@@ -26,12 +28,12 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    await Product.findById(req.body.productId).orFail(
+    await Product.findById(req.body.product).orFail(
       new NotFound('Продукт не найден'),
     );
-    const { productId, quantity } = req.body;
+    const { product, quantity } = req.body;
     const order = await Order.create({
-      productId,
+      product,
       quantity,
     });
     res.status(201).json({
@@ -55,6 +57,7 @@ router.get('/:orderId', async (req, res, next) => {
     const id = req.params.orderId;
     const order = await Order.findById(id)
       .select('-__v')
+      .populate('product')
       .orFail(new NotFound('Order is not found'));
     res.status(200).json({
       order,
