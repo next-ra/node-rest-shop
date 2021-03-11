@@ -14,8 +14,10 @@
   "author": "Denis Luchnikov",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "mongoose": "^5.11.19",
+    "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "uuid": "^8.3.2"
