@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const config = require('./config');
@@ -18,6 +19,7 @@ mongoose
   .catch(() => console.log('Ошибка подключения к базе данных'));
 
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
