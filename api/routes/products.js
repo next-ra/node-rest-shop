@@ -4,6 +4,7 @@ const multer = require('multer');
 const uuid = require('uuid').v4;
 const path = require('path');
 const NotFound = require('../../customErrors/NotFound');
+const checkAuth = require('../middlewares/check-auth');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads');
@@ -53,32 +54,37 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', upload.single('productImage'), async (req, res, next) => {
-  try {
-    console.log(req.file.path);
-    const { name, price } = req.body;
-    const image = req.file.path;
-    const product = await Product.create({
-      name,
-      price,
-      image,
-    });
-    res.status(201).json({
-      message: 'Product was created',
-      createdProduct: {
+router.post(
+  '/',
+  checkAuth,
+  upload.single('productImage'),
+  async (req, res, next) => {
+    try {
+      console.log(req.file.path);
+      const { name, price } = req.body;
+      const image = req.file.path;
+      const product = await Product.create({
         name,
         price,
         image,
-        request: {
-          type: 'GET',
-          url: `http://localhost:3000/products/${product._id}`,
+      });
+      res.status(201).json({
+        message: 'Product was created',
+        createdProduct: {
+          name,
+          price,
+          image,
+          request: {
+            type: 'GET',
+            url: `http://localhost:3000/products/${product._id}`,
+          },
         },
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 router.get('/:productId', async (req, res, next) => {
   try {
@@ -99,7 +105,7 @@ router.get('/:productId', async (req, res, next) => {
   }
 });
 
-router.patch('/:productId', async (req, res, next) => {
+router.patch('/:productId', checkAuth, async (req, res, next) => {
   try {
     const product = await Product.findByIdAndUpdate(
       req.params.productId,
@@ -124,7 +130,7 @@ router.patch('/:productId', async (req, res, next) => {
   }
 });
 
-router.delete('/:productId', async (req, res, next) => {
+router.delete('/:productId', checkAuth, async (req, res, next) => {
   try {
     const id = req.params.productId;
     await Product.deleteOne({ _id: id }).orFail(

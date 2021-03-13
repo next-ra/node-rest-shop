@@ -2,7 +2,8 @@ const router = require('express').Router();
 const Order = require('../models/order');
 const Product = require('../models/product');
 const NotFound = require('../../customErrors/NotFound');
-router.get('/', async (req, res, next) => {
+const checkAuth = require('../middlewares/check-auth');
+router.get('/', checkAuth, async (req, res, next) => {
   try {
     const orders = await Order.find({})
       .select('-__v')
@@ -26,7 +27,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', checkAuth, async (req, res, next) => {
   try {
     await Product.findById(req.body.product).orFail(
       new NotFound('Продукт не найден'),
@@ -52,7 +53,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.get('/:orderId', async (req, res, next) => {
+router.get('/:orderId', checkAuth, async (req, res, next) => {
   try {
     const id = req.params.orderId;
     const order = await Order.findById(id)
@@ -72,7 +73,7 @@ router.get('/:orderId', async (req, res, next) => {
   }
 });
 
-router.delete('/:orderId', async (req, res, next) => {
+router.delete('/:orderId', checkAuth, async (req, res, next) => {
   try {
     const id = req.params.orderId;
     await Order.deleteOne({ _id: id }).orFail(
