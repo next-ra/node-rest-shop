@@ -32,7 +32,9 @@ const upload = multer({
 
 router.get('/', async (req, res, next) => {
   try {
-    const products = await Product.find().select('-__v'); // select __v убирает версию в ответе
+    const products = await Product.find()
+      .select('-__v') // select __v убирает версию в ответе
+      .orFail(new NotFound('Продуктов не найдено'));
     const response = {
       count: products.length,
       products: products.map((p) => {

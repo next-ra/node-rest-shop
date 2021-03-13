@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -13,6 +14,19 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
+
+// userSchema.statics.findUserByCredentials = async function (email, password) {
+//   const user = await this.findOne({ email })
+//     .select('+password')
+//     .orFail(new Unauthorized(userRes.forbidden));
+
+//   return bcrypt.compare(password, user.password).then((matched) => {
+//     if (!matched) {
+//       throw new Unauthorized(userRes.forbidden);
+//     }
+//     return user;
+//   });
+// };
 
 userSchema.plugin(uniqueValidator);
 
