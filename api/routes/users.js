@@ -34,7 +34,7 @@ router.post('/login', async (req, res, next) => {
         { email: user.email, userId: user._id },
         config.JWT_SECRET,
         {
-          expiresIn: '1h',
+          expiresIn: '3h',
         },
       );
       res.status(200).json({ message: 'Auth successful', token });

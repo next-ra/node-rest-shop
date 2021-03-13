@@ -3,10 +3,12 @@ const config = require('../../config');
 module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
+    console.log(token);
     const decoded = jwt.verify(token, config.JWT_SECRET);
     req.userData = decoded;
     next();
   } catch (err) {
+    console.log(err);
     next(new Error('auth failed in auth-check'));
   }
 };
