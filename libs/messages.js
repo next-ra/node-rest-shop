@@ -12,10 +12,16 @@ module.exports = {
     notFound: 'User is not found',
     deleted: 'User deleted with ID:',
   },
-  ProductsResponses: {
+  productsResponses: {
     created: 'Product created',
     deleted: 'Product deleted',
     notFound: 'Product is not found',
+  },
+  ordersResponses: {
+    created: 'Order created',
+    deleted: 'Order deleted',
+    notFound: 'Order is not found',
+    noOrders: 'No orders created yet',
   },
   errorsResponses: {
     notFound: 'Resource is not found',

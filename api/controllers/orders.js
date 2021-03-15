@@ -1,9 +1,11 @@
 const Order = require('../models/order');
 const Product = require('../models/product');
 const NotFound = require('../../customErrors/NotFound');
+const { ordersResponses, productsResponses } = require('../../libs/messages');
 exports.orders_get_all = async (req, res, next) => {
   try {
     const orders = await Order.find({})
+      .orFail(new NotFound(ordersResponses.noOrders))
       .select('-__v')
       .populate('product', 'name');
     const response = {
@@ -28,7 +30,7 @@ exports.orders_get_all = async (req, res, next) => {
 exports.orders_create_one = async (req, res, next) => {
   try {
     await Product.findById(req.body.product).orFail(
-      new NotFound('Продукт не найден'),
+      new NotFound(productsResponses.notFound),
     );
     const { product, quantity } = req.body;
     const order = await Order.create({
@@ -57,7 +59,7 @@ exports.orders_get_one = async (req, res, next) => {
     const order = await Order.findById(id)
       .select('-__v')
       .populate('product')
-      .orFail(new NotFound('Order is not found'));
+      .orFail(new NotFound(productsResponses.notFound));
     res.status(200).json({
       order,
       request: {
@@ -75,7 +77,7 @@ exports.orders_delete_one = async (req, res, next) => {
   try {
     const id = req.params.orderId;
     await Order.deleteOne({ _id: id }).orFail(
-      new NotFound('Order is not found'),
+      new NotFound(ordersResponses.notFound),
     );
     res.status(200).json({
       message: `Order with this id:${id} deleted`,
