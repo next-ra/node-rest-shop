@@ -60,7 +60,7 @@ exports.delete_user = async (req, res, next) => {
 
 exports.get_all_users = async (req, res, next) => {
   try {
-    const users = await User.find({}).select('-__v');
+    const users = await User.find().select('-__v');
     const response = {
       count: users.length,
       users: users.map((u) => {
@@ -72,5 +72,34 @@ exports.get_all_users = async (req, res, next) => {
     res.status(200).json(response);
   } catch (err) {
     next(err);
+  }
+};
+
+exports.test = async (req, res, next) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  const result = {};
+
+  if (endIndex < (await User.countDocuments())) {
+    result.next = {
+      page: page + 1,
+      limit: limit,
+    };
+  }
+  if (startIndex > 0) {
+    result.previous = {
+      page: page - 1,
+      limit: limit,
+    };
+  }
+  try {
+    result.results = await User.find().limit(limit).skip(startIndex);
+    res.send(result);
+    next();
+  } catch (e) {
+    res.status(500).json({ message: e.message });
   }
 };

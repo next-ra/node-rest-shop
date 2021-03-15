@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const { unlink } = require('fs');
 const NotFound = require('../../customErrors/NotFound');
+const BadRequest = require('../../customErrors/BadRequest');
 const { productsResponses } = require('../../libs/messages');
 
 exports.get_all = async (req, res, next) => {
@@ -30,6 +31,10 @@ exports.get_all = async (req, res, next) => {
 exports.create_product = async (req, res, next) => {
   try {
     const { name, price } = req.body;
+
+    if (!req.file) {
+      throw new BadRequest(productsResponses.noImage);
+    }
     const image = req.file.path;
     const product = await Product.create({
       name,

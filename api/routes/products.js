@@ -8,8 +8,8 @@ router.get('/', productController.get_all);
 router.post(
   '/',
   checkAuth,
-  upload.single('productImage'),
   productController.create_product,
+  upload.single('productImage'),
 );
 
 router.get('/:productId', productController.get_product);

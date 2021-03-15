@@ -18,6 +18,7 @@ module.exports = {
     notFound: 'Product is not found',
     updated: 'Product updated',
     noProducts: 'No products created yet',
+    noImage: 'Image must be provided',
   },
   ordersResponses: {
     created: 'Order created',

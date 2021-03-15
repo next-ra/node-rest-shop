@@ -1,7 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const uuid = require('uuid').v4;
-
+const BadRequest = require('../../customErrors/BadRequest');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads');
@@ -18,7 +18,10 @@ const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
     cb(null, true);
   } else {
-    cb(new Error(`неверный формат файла, доступные: jpg, jpeg, png`), false);
+    cb(
+      new BadRequest(`неверный формат файла, доступные: jpg, jpeg, png`),
+      false,
+    );
   }
 };
 
