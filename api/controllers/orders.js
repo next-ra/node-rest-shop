@@ -80,7 +80,7 @@ exports.orders_delete_one = async (req, res, next) => {
       new NotFound(ordersResponses.notFound),
     );
     res.status(200).json({
-      message: `Order with this id:${id} deleted`,
+      message: ordersResponses.deleted + id,
       request: {
         description: 'To create a new order',
         type: 'POST',
