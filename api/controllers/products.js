@@ -103,11 +103,13 @@ exports.delete_product = async (req, res, next) => {
     res.status(200).json({
       message: 'Product deleted successfully',
       request: {
+        description: 'Create a new product',
         type: 'POST',
         url: `http://localhost:3000/products`,
         body: {
           name: 'String',
           price: 'Number',
+          image: 'Path-to-image',
         },
       },
     });
