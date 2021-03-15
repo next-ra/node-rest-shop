@@ -2,6 +2,10 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
+const Unauthorized = require('../../customErrors/Unauthorized');
+const NotFound = require('../../customErrors/NotFound');
+const { usersResponses } = require('../../libs/messages');
+
 exports.signup = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -10,9 +14,11 @@ exports.signup = async (req, res, next) => {
       email,
       password: hash,
     });
-    res
-      .status(201)
-      .send({ message: `user created`, _id: user._id, email: user.email });
+    res.status(201).send({
+      message: usersResponses.created,
+      _id: user._id,
+      email: user.email,
+    });
   } catch (err) {
     next(err);
   }
@@ -22,10 +28,10 @@ exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email })
       .select('+password')
-      .orFail(new Error('Auth failed with email')); // TODO: add custom errors status
+      .orFail(new Unauthorized(usersResponses.forbidden));
     const isMatched = await bcrypt.compare(req.body.password, user.password);
     if (!isMatched) {
-      throw new Error('Auth failed here'); // TODO: add custom errors status
+      throw new Unauthorized(usersResponses.forbidden);
     } else {
       const token = jwt.sign(
         { email: user.email, userId: user._id },
@@ -34,7 +40,7 @@ exports.login = async (req, res, next) => {
           expiresIn: '3h',
         },
       );
-      res.status(200).json({ message: 'Auth successful', token });
+      res.status(200).json({ message: usersResponses.login, token });
     }
   } catch (err) {
     next(err);
@@ -43,8 +49,10 @@ exports.login = async (req, res, next) => {
 exports.delete_user = async (req, res, next) => {
   try {
     const id = req.params.userId;
-    await User.deleteOne({ _id: id });
-    res.status(200).json({ message: `User with ID:${id} deleted` });
+    await User.deleteOne({ _id: id }).orFail(
+      new NotFound(usersResponses.notFound),
+    );
+    res.status(200).json({ message: usersResponses.deleted + id });
   } catch (err) {
     next(err);
   }

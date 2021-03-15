@@ -10,6 +10,7 @@ module.exports = {
     needAuth: 'Auth is required',
     forbidden: 'Wrong email or password',
     notFound: 'User is not found',
+    deleted: 'User deleted with ID:',
   },
   ProductsResponses: {
     created: 'Product created',
