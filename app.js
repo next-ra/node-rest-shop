@@ -7,6 +7,8 @@ const config = require('./config');
 const productRoutes = require('./api/routes/products');
 const ordersRoutes = require('./api/routes/orders');
 const usersRoutes = require('./api/routes/users');
+const { checkError } = require('./api/middlewares/check-error');
+const { errorsResponses } = require('./libs/messages');
 
 mongoose
   .connect(config.MONGODB, {
@@ -39,19 +41,17 @@ app.use('/products', productRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/users', usersRoutes);
 app.use((req, res, next) => {
-  const error = new Error('Not Found');
+  const error = new Error('Page not found');
   error.status = 404;
   next(error);
 });
 
+app.use(checkError);
 app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.json({
-    error: {
-      message: err.message || 'enternal error',
-      status: err.status || 500,
-      name: err.name,
-    },
+  res.status(err.status || 500).send({
+    message: err.message || errorsResponses.internal,
+    name: err.name,
+    status: err.status,
   });
 });
 app.listen(config.PORT, () => {
