@@ -31,5 +31,6 @@ module.exports = {
     wrongId: 'Wrong id format',
     internal: 'Internal error',
     uniq: 'Email must be unique',
+    id: 'Invalid id format',
   },
 };

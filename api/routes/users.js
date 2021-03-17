@@ -10,6 +10,4 @@ router.delete('/:userId', usersController.delete_user);
 
 router.get('/', paginate(User));
 
-// router.get('/', usersController.test);
-
 module.exports = router;

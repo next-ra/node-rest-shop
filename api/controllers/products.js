@@ -31,11 +31,11 @@ exports.get_all = async (req, res, next) => {
 exports.create_product = async (req, res, next) => {
   try {
     const { name, price } = req.body;
-
     if (!req.file) {
       throw new BadRequest(productsResponses.noImage);
     }
     const image = req.file.path;
+
     const product = await Product.create({
       name,
       price,
@@ -55,13 +55,18 @@ exports.create_product = async (req, res, next) => {
       },
     });
   } catch (err) {
+    unlink(req.file.path, (err) => {
+      if (err) {
+        next(err);
+      }
+    });
     next(err);
   }
 };
 
 exports.get_product = async (req, res, next) => {
   try {
-    const id = req.params.productId;
+    const id = req.params.id;
     const product = await Product.findById(id)
       .select('-__v')
       .orFail(new NotFound(productsResponses.notFound));
@@ -81,7 +86,7 @@ exports.get_product = async (req, res, next) => {
 exports.update_product = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndUpdate(
-      req.params.productId,
+      req.params.id,
       {
         name: req.body.name,
         price: req.body.price,
@@ -109,9 +114,9 @@ exports.delete_product = async (req, res, next) => {
     const product = await Product.findByIdAndDelete(id).orFail(
       new NotFound(productsResponses.notFound),
     );
+
     unlink(product.image, (err) => {
-      if (err) throw err;
-      console.log(product.image + ' deleted');
+      console.log(err);
     });
     res.status(200).json({
       message: productsResponses.deleted + id,
