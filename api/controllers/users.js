@@ -8,9 +8,10 @@ const { usersResponses } = require('../../libs/messages');
 
 exports.signup = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({
+      name,
       email,
       password: hash,
     });
@@ -20,7 +21,6 @@ exports.signup = async (req, res, next) => {
       email: user.email,
     });
   } catch (err) {
-    // если тело пустое получаем ошибку bcrypt
     next(err);
   }
 };

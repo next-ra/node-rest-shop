@@ -30,37 +30,39 @@ exports.get_all = async (req, res, next) => {
 
 exports.create_product = async (req, res, next) => {
   try {
-    const { name, price } = req.body;
     if (!req.file) {
       throw new BadRequest(productsResponses.noImage);
-    }
-    const image = req.file.path;
+    } else {
+      const image = req.file.path;
+      const { name, price } = req.body;
 
-    const product = await Product.create({
-      name,
-      price,
-      image,
-    });
-    res.status(201).json({
-      message: productsResponses.created,
-      createdProduct: {
-        _id: product._id,
+      const product = await Product.create({
         name,
         price,
         image,
-        request: {
-          type: 'GET',
-          url: `http://localhost:3000/products/${product._id}`,
+      });
+      res.status(201).json({
+        message: productsResponses.created,
+        createdProduct: {
+          _id: product._id,
+          name,
+          price,
+          image,
+          request: {
+            type: 'GET',
+            url: `http://localhost:3000/products/${product._id}`,
+          },
         },
-      },
-    });
+      });
+    }
   } catch (err) {
-    unlink(req.file.path, (err) => {
-      if (err) {
+    if (err.message === 'Image must be provided') {
+      next(err);
+    } else {
+      unlink(req.file.path, (error) => {
         next(err);
-      }
-    });
-    next(err);
+      });
+    }
   }
 };
 
@@ -115,9 +117,7 @@ exports.delete_product = async (req, res, next) => {
       new NotFound(productsResponses.notFound),
     );
 
-    unlink(product.image, (err) => {
-      console.log(err);
-    });
+    unlink(product.image, (err) => {});
     res.status(200).json({
       message: productsResponses.deleted + id,
 

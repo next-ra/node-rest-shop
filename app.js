@@ -8,6 +8,7 @@ const productRoutes = require('./api/routes/products');
 const ordersRoutes = require('./api/routes/orders');
 const usersRoutes = require('./api/routes/users');
 const { checkError } = require('./api/middlewares/check-error');
+const { checkWrongImage } = require('./api/middlewares/check-wrong-image');
 const { errorsResponses } = require('./libs/messages');
 
 mongoose
@@ -20,7 +21,7 @@ mongoose
   .then(() => console.log('База данных подключена'))
   .catch(() => console.log('Ошибка подключения к базе данных'));
 
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -45,13 +46,13 @@ app.use((req, res, next) => {
   error.status = 404;
   next(error);
 });
-
+app.use(checkWrongImage);
 app.use(checkError);
 app.use((err, req, res, next) => {
   res.status(err.status || 500).send({
     message: err.message || errorsResponses.internal,
     name: err.name,
-    status: err.status,
+    status: err.status || 500,
   });
 });
 app.listen(config.PORT, () => {
