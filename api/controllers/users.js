@@ -53,6 +53,16 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.logout = async (req, res, next) => {
+  try {
+    res.clearCookie('jwt', {
+      httpOnly: true,
+    });
+    res.status(200).send({ message: 'You are logout now' });
+  } catch (err) {
+    next(err);
+  }
+};
 exports.get_user = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.userId)

@@ -4,6 +4,7 @@ const { upload } = require('../middlewares/multer');
 const productController = require('../controllers/products');
 const { checkId } = require('../middlewares/check-id');
 const { createProductValidate } = require('../middlewares/celebrate-validate');
+
 router.get('/', productController.get_all);
 
 router.post(

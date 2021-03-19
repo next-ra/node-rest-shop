@@ -5,14 +5,12 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const config = require('./config');
 
-const productRoutes = require('./api/routes/products');
-const ordersRoutes = require('./api/routes/orders');
-const usersRoutes = require('./api/routes/users');
-const { cors } = require('./api/middlewares/cors')
+const routes = require('./api/routes/index');
+const { cors } = require('./api/middlewares/cors');
 const { checkError } = require('./api/middlewares/check-error');
 const { checkWrongImage } = require('./api/middlewares/check-wrong-image');
-const { pageNotFound } = require('./api/middlewares/page-not-found');
-const {errorHandler} = require('./api/middlewares/error-handler')
+
+const { errorHandler } = require('./api/middlewares/error-handler');
 mongoose
   .connect(config.MONGODB, {
     useNewUrlParser: true,
@@ -29,10 +27,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors);
-app.use('/products', productRoutes);
-app.use('/orders', ordersRoutes);
-app.use('/users', usersRoutes);
-app.use(pageNotFound);
+app.use(routes);
+
 app.use(checkWrongImage);
 app.use(checkError);
 app.use(errorHandler);
