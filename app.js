@@ -9,8 +9,8 @@ const ordersRoutes = require('./api/routes/orders');
 const usersRoutes = require('./api/routes/users');
 const { checkError } = require('./api/middlewares/check-error');
 const { checkWrongImage } = require('./api/middlewares/check-wrong-image');
-const { errorsResponses } = require('./libs/messages');
 const { pageNotFound } = require('./api/middlewares/page-not-found');
+const {errorHandler} = require('./api/middlewares/error-handler')
 mongoose
   .connect(config.MONGODB, {
     useNewUrlParser: true,
@@ -21,7 +21,7 @@ mongoose
   .then(() => console.log('База данных подключена'))
   .catch(() => console.log('Ошибка подключения к базе данных'));
 
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -44,13 +44,7 @@ app.use('/users', usersRoutes);
 app.use(pageNotFound);
 app.use(checkWrongImage);
 app.use(checkError);
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).send({
-    message: err.message || errorsResponses.internal,
-    name: err.name,
-    status: err.status || 500,
-  });
-});
+app.use(errorHandler);
 app.listen(config.PORT, () => {
   console.log(`Сервер работает на ${config.PORT} порту`);
 });

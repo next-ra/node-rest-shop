@@ -47,6 +47,20 @@ exports.login = async (req, res, next) => {
     next(err);
   }
 };
+
+
+exports.get_user = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).orFail(
+      new NotFound(userRes.notFound),
+    );
+    res.send({ data: user });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 exports.delete_user = async (req, res, next) => {
   try {
     const id = req.params.userId;
