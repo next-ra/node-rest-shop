@@ -27,7 +27,7 @@ module.exports = {
     noOrders: 'No orders created yet',
   },
   errorsResponses: {
-    notFound: 'Resource is not found',
+    notFound: 'Page not found',
     wrongId: 'Wrong id format',
     internal: 'Internal error',
     uniq: 'Email must be unique',

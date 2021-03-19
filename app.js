@@ -10,7 +10,7 @@ const usersRoutes = require('./api/routes/users');
 const { checkError } = require('./api/middlewares/check-error');
 const { checkWrongImage } = require('./api/middlewares/check-wrong-image');
 const { errorsResponses } = require('./libs/messages');
-
+const { pageNotFound } = require('./api/middlewares/page-not-found');
 mongoose
   .connect(config.MONGODB, {
     useNewUrlParser: true,
@@ -41,11 +41,7 @@ app.use((req, res, next) => {
 app.use('/products', productRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/users', usersRoutes);
-app.use((req, res, next) => {
-  const error = new Error('Page not found');
-  error.status = 404;
-  next(error);
-});
+app.use(pageNotFound);
 app.use(checkWrongImage);
 app.use(checkError);
 app.use((err, req, res, next) => {
