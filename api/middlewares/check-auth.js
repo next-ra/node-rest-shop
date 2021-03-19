@@ -1,12 +1,21 @@
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
+const Unauthorized = require('../../customErrors/Unauthorized');
+const { usersResponses } = require('../../libs/messages');
+
 module.exports = (req, res, next) => {
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, config.JWT_SECRET);
-    req.userData = decoded;
-    next();
-  } catch (err) {
-    next(new Error('auth failed in auth-check'));
+  const { jwt: token } = req.cookies;
+
+  if (!token) {
+    throw new Unauthorized(usersResponses.needAuth);
   }
+
+  try {
+    payload = jwt.verify(token, config.JWT_SECRET);
+  } catch (err) {
+    throw new Unauthorized(usersResponses.needAuth);
+  }
+  req.user = payload;
+
+  next();
 };

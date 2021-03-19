@@ -38,28 +38,31 @@ exports.login = async (req, res, next) => {
         { email: user.email, userId: user._id },
         config.JWT_SECRET,
         {
-          expiresIn: '3h',
+          expiresIn: '7d',
         },
       );
-      res.status(200).json({ message: usersResponses.login, token });
+      res.cookie('jwt', token, {
+        maxAge: 3600000,
+        httpOnly: true,
+        sameSite: true,
+      });
+      res.status(200).json({ message: usersResponses.login });
     }
   } catch (err) {
     next(err);
   }
 };
 
-
 exports.get_user = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id).orFail(
-      new NotFound(userRes.notFound),
-    );
+    const user = await User.findById(req.user.userId)
+      .select('-__v')
+      .orFail(new NotFound(usersResponses.notFound));
     res.send({ data: user });
   } catch (err) {
     next(err);
   }
 };
-
 
 exports.delete_user = async (req, res, next) => {
   try {
