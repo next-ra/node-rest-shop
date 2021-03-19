@@ -2,16 +2,15 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
 const limiter = require('./api/middlewares/limiter');
+const helmet = require('helmet');
 const config = require('./config');
-
 const routes = require('./api/routes/index');
 const { cors } = require('./api/middlewares/cors');
 const { checkError } = require('./api/middlewares/check-error');
 const { checkWrongImage } = require('./api/middlewares/check-wrong-image');
-
 const { errorHandler } = require('./api/middlewares/error-handler');
+
 mongoose
   .connect(config.MONGODB, {
     useNewUrlParser: true,
@@ -24,9 +23,8 @@ mongoose
 
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+app.use(helmet());
 app.use(cors);
 app.use(limiter);
 app.use(routes);
