@@ -18,6 +18,7 @@
     "celebrate": "^13.0.4",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
+    "express-rate-limit": "^5.2.6",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.19",
     "mongoose-unique-validator": "^2.0.3",

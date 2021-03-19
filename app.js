@@ -3,6 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const limiter = require('./api/middlewares/limiter');
 const config = require('./config');
 
 const routes = require('./api/routes/index');
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors);
+app.use(limiter);
 app.use(routes);
 app.use(checkWrongImage);
 app.use(checkError);

@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const checkAuth = require('../middlewares/check-auth');
 const { upload } = require('../middlewares/multer');
 const productController = require('../controllers/products');
 const { checkId } = require('../middlewares/check-id');
