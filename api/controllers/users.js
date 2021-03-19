@@ -8,13 +8,14 @@ const { usersResponses } = require('../../libs/messages');
 
 exports.signup = async (req, res, next) => {
   try {
-    const { name, email, password, location } = req.body;
+    const { name, email, password, location, phone } = req.body;
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
       email,
       password: hash,
       location,
+      phone,
     });
     res.status(201).send(
       //   {
@@ -104,13 +105,13 @@ exports.delete_user = async (req, res, next) => {
 
 exports.update_user = async (req, res, next) => {
   try {
+    const { phone, location } = req.body;
+    console.log(req.body);
     const user = await User.findByIdAndUpdate(
       req.user.id,
       {
-        location: {
-          country: req.body.location.country,
-          city: req.body.location.city,
-        },
+        phone,
+        location,
       },
       { runValidators: true, new: true },
     )

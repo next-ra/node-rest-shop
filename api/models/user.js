@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
     required: [true, 'password is required minLength: 3'],
     select: false,
   },
+  phone: {
+    type: String,
+    defaultStatus: null,
+  },
   location: {
     type: locationSchema,
     default: {

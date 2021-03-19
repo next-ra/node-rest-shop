@@ -16,6 +16,13 @@ const createUserValidate = celebrate(
           .email({ allowUnicode: false })
           .messages(errors),
         password: Joi.string().required().min(3).messages(errors),
+        phone: Joi.string()
+          .pattern(
+            new RegExp(
+              /^((\+7|8))\s?\(?\d{3}-?\s?\)?\s?\d{3}-?\s?\d{2}-?\s?\d{2}\s?$/,
+            ),
+          )
+          .messages(errors),
         location: Joi.object()
           .keys({
             country: Joi.string().default(null).messages(errors),
@@ -55,8 +62,30 @@ const createProductValidate = celebrate(
   { abortEarly: false },
 );
 
+const updateUserValidate = celebrate(
+  {
+    body: Joi.object()
+      .keys({
+        phone: Joi.string()
+          .pattern(
+            new RegExp(
+              /^((\+7|8))\s?\(?\d{3}-?\s?\)?\s?\d{3}-?\s?\d{2}-?\s?\d{2}\s?$/,
+            ),
+          )
+          .messages(errors),
+        location: Joi.object().keys({
+          country: Joi.string().default(null).messages(errors),
+          city: Joi.string().default(null).messages(errors),
+        }),
+      })
+      .messages(errors),
+  },
+  { abortEarly: false },
+);
+
 module.exports = {
   createUserValidate,
   loginValidate,
   createProductValidate,
+  updateUserValidate,
 };
