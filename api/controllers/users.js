@@ -63,12 +63,24 @@ exports.logout = async (req, res, next) => {
     next(err);
   }
 };
-exports.get_user = async (req, res, next) => {
+exports.get_me = async (req, res, next) => {
   try {
+    console.log(req.user);
     const user = await User.findById(req.user.userId)
       .select('-__v')
       .orFail(new NotFound(usersResponses.notFound));
     res.send({ data: user });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.get_user = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select('-__v')
+      .orFail(new NotFound(usersResponses.notFound));
+    res.json({ data: user });
   } catch (err) {
     next(err);
   }
