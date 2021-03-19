@@ -16,6 +16,12 @@ const createUserValidate = celebrate(
           .email({ allowUnicode: false })
           .messages(errors),
         password: Joi.string().required().min(3).messages(errors),
+        location: Joi.object()
+          .keys({
+            country: Joi.string().default(null).messages(errors),
+            city: Joi.string().default(null).messages(errors),
+          })
+          .messages(errors),
       })
       .messages(errors),
   },

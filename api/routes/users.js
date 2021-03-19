@@ -11,4 +11,6 @@ router.get('/me', usersController.get_me);
 
 router.get('/:id', checkId, usersController.get_user);
 
+router.patch('/me', usersController.update_user);
+
 module.exports = router;

@@ -8,18 +8,22 @@ const { usersResponses } = require('../../libs/messages');
 
 exports.signup = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, location } = req.body;
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
       email,
       password: hash,
+      location,
     });
-    res.status(201).send({
-      message: usersResponses.created,
-      _id: user._id,
-      email: user.email,
-    });
+    res.status(201).send(
+      //   {
+      //   message: usersResponses.created,
+      //   _id: user._id,
+      //   email: user.email,
+      // }
+      { data: user },
+    );
   } catch (err) {
     next(err);
   }
@@ -35,7 +39,7 @@ exports.login = async (req, res, next) => {
       throw new Unauthorized(usersResponses.forbidden);
     } else {
       const token = jwt.sign(
-        { email: user.email, userId: user._id },
+        { email: user.email, id: user._id },
         config.JWT_SECRET,
         {
           expiresIn: '7d',
@@ -64,9 +68,9 @@ exports.logout = async (req, res, next) => {
   }
 };
 exports.get_me = async (req, res, next) => {
+  console.log(req.user);
   try {
-    console.log(req.user);
-    const user = await User.findById(req.user.userId)
+    const user = await User.findById(req.user.id)
       .select('-__v')
       .orFail(new NotFound(usersResponses.notFound));
     res.send({ data: user });
@@ -93,6 +97,26 @@ exports.delete_user = async (req, res, next) => {
       new NotFound(usersResponses.notFound),
     );
     res.status(200).json({ message: usersResponses.deleted + id });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.update_user = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        location: {
+          country: req.body.location.country,
+          city: req.body.location.city,
+        },
+      },
+      { runValidators: true, new: true },
+    )
+      .select('-__v')
+      .orFail(new NotFound(usersResponses.notFound));
+    res.json({ message: 'User updated', data: user });
   } catch (err) {
     next(err);
   }

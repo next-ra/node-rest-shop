@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const { isEmail } = require('validator');
+const locationSchema = require('./location');
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -19,6 +21,13 @@ const userSchema = new mongoose.Schema({
     minlength: 3,
     required: [true, 'password is required minLength: 3'],
     select: false,
+  },
+  location: {
+    type: locationSchema,
+    default: {
+      country: null,
+      city: null,
+    },
   },
 });
 
