@@ -2,7 +2,6 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
-const Unauthorized = require('../../customErrors/Unauthorized');
 const NotFound = require('../../customErrors/NotFound');
 const { usersResponses } = require('../../libs/messages');
 
@@ -32,27 +31,17 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email })
-      .select('+password')
-      .orFail(new Unauthorized(usersResponses.forbidden));
-    const isMatched = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatched) {
-      throw new Unauthorized(usersResponses.forbidden);
-    } else {
-      const token = jwt.sign(
-        { email: user.email, id: user._id },
-        config.JWT_SECRET,
-        {
-          expiresIn: '7d',
-        },
-      );
-      res.cookie('jwt', token, {
-        maxAge: 3600000,
-        httpOnly: true,
-        sameSite: true,
-      });
-      res.status(200).json({ message: usersResponses.login });
-    }
+    const { email, password } = req.body;
+    const user = await User.findUserByCredentials(email, password);
+    const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
+      expiresIn: '7d',
+    });
+    res.cookie('jwt', token, {
+      maxAge: 3600000,
+      httpOnly: true,
+      sameSite: true,
+    });
+    res.status(200).json({ message: usersResponses.login });
   } catch (err) {
     next(err);
   }
@@ -106,13 +95,10 @@ exports.delete_user = async (req, res, next) => {
 exports.update_user = async (req, res, next) => {
   try {
     const { phone, location } = req.body;
-    console.log(req.body);
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      {
-        phone,
-        location,
-      },
+      { phone, location },
       { runValidators: true, new: true },
     )
       .select('-__v')

@@ -22,6 +22,7 @@ const createUserValidate = celebrate(
               /^((\+7|8))\s?\(?\d{3}-?\s?\)?\s?\d{3}-?\s?\d{2}-?\s?\d{2}\s?$/,
             ),
           )
+          .default(null)
           .messages(errors),
         location: Joi.object()
           .keys({
