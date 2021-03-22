@@ -7,6 +7,7 @@ const errors = {
   'string.email': '{#key} - must be valid',
   'any.custom': '{#key} - link must be valid',
   'object.unknown': '{#key} - invalid field',
+
   'string.pattern.base': '{#key} - must be in this format: +7 123 456 78 90',
 };
 

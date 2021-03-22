@@ -67,6 +67,7 @@ const updateUserValidate = celebrate(
   {
     body: Joi.object()
       .keys({
+        name: Joi.string().min(3).max(30).alphanum().messages(errors),
         phone: Joi.string()
           .pattern(
             new RegExp(
@@ -74,10 +75,12 @@ const updateUserValidate = celebrate(
             ),
           )
           .messages(errors),
-        location: Joi.object().keys({
-          country: Joi.string().default(null).messages(errors),
-          city: Joi.string().default(null).messages(errors),
-        }),
+        location: Joi.object()
+          .keys({
+            country: Joi.string().messages(errors).required(),
+            city: Joi.string().messages(errors).required(),
+          })
+          .messages(errors),
       })
       .messages(errors),
   },

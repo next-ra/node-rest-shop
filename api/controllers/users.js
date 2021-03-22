@@ -94,16 +94,15 @@ exports.delete_user = async (req, res, next) => {
 
 exports.update_user = async (req, res, next) => {
   try {
-    const { phone, location } = req.body;
+    let updateData = { ...req.body };
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { phone, location },
-      { runValidators: true, new: true },
-    )
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+      runValidators: true,
+      new: true,
+    })
       .select('-__v')
       .orFail(new NotFound(usersResponses.notFound));
-    res.json({ message: 'User updated', data: user });
+    res.json({ message: 'User updated', data: updatedUser });
   } catch (err) {
     next(err);
   }
