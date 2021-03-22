@@ -94,7 +94,17 @@ exports.delete_user = async (req, res, next) => {
 
 exports.update_user = async (req, res, next) => {
   try {
-    let updateData = { ...req.body };
+    const user = await User.findById(req.user.id);
+
+    let updateData = await {
+      ...req.body,
+    };
+
+    if (req.body.location)
+      updateData.location = {
+        city: req.body.location.city || user.location.city,
+        country: req.body.location.country || user.location.country,
+      };
 
     const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
       runValidators: true,

@@ -77,8 +77,8 @@ const updateUserValidate = celebrate(
           .messages(errors),
         location: Joi.object()
           .keys({
-            country: Joi.string().messages(errors).required(),
-            city: Joi.string().messages(errors).required(),
+            country: Joi.string().messages(errors),
+            city: Joi.string().messages(errors),
           })
           .messages(errors),
       })
