@@ -1,35 +1,19 @@
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('../../libs/celebrate-messages');
+const { template } = require('../../libs/template-of-celebrate');
 
 const createUserValidate = celebrate(
   {
     body: Joi.object()
       .keys({
-        name: Joi.string()
-          .required()
-          .min(3)
-          .max(30)
-          .alphanum()
-          .messages(errors),
-        email: Joi.string()
-          .required()
-          .email({ allowUnicode: false })
-          .messages(errors),
-        password: Joi.string().required().min(3).messages(errors),
-        phone: Joi.string()
-          .pattern(
-            new RegExp(
-              /^((\+7|8))\s?\(?\d{3}-?\s?\)?\s?\d{3}-?\s?\d{2}-?\s?\d{2}\s?$/,
-            ),
-          )
-          .default(null)
-          .messages(errors),
-        location: Joi.object()
-          .keys({
-            country: Joi.string().default(null).messages(errors),
-            city: Joi.string().default(null).messages(errors),
-          })
-          .messages(errors),
+        name: template.name.required(),
+        email: template.email,
+        password: template.password,
+        phone: template.phone.default(null),
+        location: template.location.keys({
+          country: template.string.default(null),
+          city: template.string.default(null),
+        }),
       })
       .messages(errors),
   },
@@ -40,11 +24,8 @@ const loginValidate = celebrate(
   {
     body: Joi.object()
       .keys({
-        email: Joi.string()
-          .required()
-          .email({ allowUnicode: false })
-          .messages(errors),
-        password: Joi.string().required().min(3).messages(errors),
+        email: template.email,
+        password: template.password,
       })
       .messages(errors),
   },
@@ -67,18 +48,12 @@ const updateUserValidate = celebrate(
   {
     body: Joi.object()
       .keys({
-        name: Joi.string().min(3).max(30).alphanum().messages(errors),
-        phone: Joi.string()
-          .pattern(
-            new RegExp(
-              /^((\+7|8))\s?\(?\d{3}-?\s?\)?\s?\d{3}-?\s?\d{2}-?\s?\d{2}\s?$/,
-            ),
-          )
-          .messages(errors),
-        location: Joi.object()
+        name: template.name,
+        phone: template.phone,
+        location: template.location
           .keys({
-            country: Joi.string().messages(errors),
-            city: Joi.string().messages(errors),
+            country: template.string,
+            city: template.string,
           })
           .messages(errors),
       })
