@@ -35,3 +35,81 @@ npm i
 ```
 npm run dev
 ```
+
+#### Создать пользователя
+
+**POST** /signup
+
+_Content-Type: application/json_
+
+```
+{
+"name": "Zak De La Rocha",
+"email": "Zak@yandex.ru",
+"password": "password123"
+}
+```
+
+#### Авторизация пользователя
+
+**POST** /signin
+
+_Content-Type: application/json_
+
+```
+{
+  "email": "Zak@yandex.ru",
+  "password": "password123"
+}
+```
+#### Получить информацию о пользователе
+
+**GET** /users/me 
+
+#### Обновить информацию пользователя
+
+**PATCH** /users/me
+
+```
+{
+  "location": {
+      "country": "Russia",
+      "city": "Moscow",
+  }
+  "phone": "+7666 123 45 67"
+}
+```
+
+#### Создать продукт
+
+**POST** /products 
+
+_Content-Type: application/json_
+
+```
+{
+    "name": "PRODUCT",
+    "price": "number",
+    "image": "string"
+}
+```
+
+#### Удалить продукт
+
+**DELETE** /products/:id
+
+
+#### Создать заказ
+
+**POST** /orders
+
+```
+{
+    "product": "product ID",
+    "quantity": "number"
+}
+```
+
+#### Несуществующий адрес
+
+**ALL** /abc_xyz
