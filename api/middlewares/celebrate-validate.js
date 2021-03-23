@@ -36,8 +36,8 @@ const createProductValidate = celebrate(
   {
     body: Joi.object()
       .keys({
-        name: Joi.string().required().alphanum().messages(errors),
-        price: Joi.string().required().alphanum().messages(errors),
+        name: Joi.string().required().messages(errors),
+        price: Joi.number().required().messages(errors),
       })
       .messages(errors),
   },
@@ -62,9 +62,22 @@ const updateUserValidate = celebrate(
   { abortEarly: false },
 );
 
+const updateProductValidate = celebrate(
+  {
+    body: Joi.object()
+      .keys({
+        name: Joi.string().messages(errors),
+        price: Joi.number().messages(errors),
+      })
+      .messages(errors),
+  },
+  { abortEarly: false },
+);
+
 module.exports = {
   createUserValidate,
   loginValidate,
   createProductValidate,
   updateUserValidate,
+  updateProductValidate,
 };

@@ -90,8 +90,7 @@ exports.update_product = async (req, res, next) => {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       {
-        name: req.body.name,
-        price: req.body.price,
+        ...req.body,
       },
       { runValidators: true, new: true },
     )
