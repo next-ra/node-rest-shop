@@ -55,7 +55,7 @@ exports.orders_create_one = async (req, res, next) => {
 
 exports.orders_get_one = async (req, res, next) => {
   try {
-    const id = req.params.orderId;
+    const id = req.params.id;
     const order = await Order.findById(id)
       .select('-__v')
       .populate('product')
@@ -75,7 +75,7 @@ exports.orders_get_one = async (req, res, next) => {
 
 exports.orders_delete_one = async (req, res, next) => {
   try {
-    const id = req.params.orderId;
+    const id = req.params.id;
     await Order.deleteOne({ _id: id }).orFail(
       new NotFound(ordersResponses.notFound),
     );

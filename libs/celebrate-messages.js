@@ -5,7 +5,7 @@ const errors = {
   'string.max': '{#key} - maximum length is: {#limit}',
   'any.required': '{#key} - required field',
   'string.email': '{#key} - must be valid',
-  'any.custom': '{#key} - link must be valid',
+  'any.custom': '{#key} - id must be valid',
   'object.unknown': '{#key} - invalid field',
   'string.pattern.base': '{#key} - must be in this format: +7 123 456 78 90',
 };

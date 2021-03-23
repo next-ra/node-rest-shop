@@ -1,6 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('../../libs/celebrate-messages');
 const { template } = require('../../libs/template-of-celebrate');
+const { checkId } = require('../middlewares/custom-check-id');
 
 const createUserValidate = celebrate(
   {
@@ -74,10 +75,18 @@ const updateProductValidate = celebrate(
   { abortEarly: false },
 );
 
+const createOrderValidate = celebrate({
+  body: Joi.object().keys({
+    product: Joi.string().required().custom(checkId).messages(errors),
+    quantity: Joi.number().default(1).messages(errors),
+  }),
+});
+
 module.exports = {
   createUserValidate,
   loginValidate,
   createProductValidate,
   updateUserValidate,
   updateProductValidate,
+  createOrderValidate,
 };
