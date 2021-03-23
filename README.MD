@@ -10,10 +10,10 @@ JS, GIT, node.js, express.js, mongoose, mongoDB
 
 Убедитесь, что у вас установлен `Node.js`.
 
-Скопируйте проект:
+Скопируйте проект: 
 
 ```
-git clone 
+git clone git@github.com:next-ra/node-rest-shop.git
 ```
 
 Установите зависимости:
